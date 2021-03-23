@@ -20,8 +20,12 @@ class ContentList(TimeStampedModel):
     file = models.ForeignKey(
         "file.File",
         verbose_name="File",
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
     text = models.TextField(
-        verbose_name="Text"
+        verbose_name="Text",
+        null=True,
+        blank=True
     )
