@@ -1,5 +1,7 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+
+
 class BlogImage(TimeStampedModel):
     image = models.ImageField(
         upload_to="blog_image",
