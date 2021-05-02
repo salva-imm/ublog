@@ -24,6 +24,7 @@ class Category(TimeStampedModel):
     )
     parent = models.ForeignKey(
         "self",
+        related_name="children",
         on_delete=models.SET_NULL,
         verbose_name="Parent category",
         null=True,
