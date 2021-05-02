@@ -1,10 +1,8 @@
 from django import forms
-from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User
+from user.models import User
 
 
 class UserCreationForm(forms.ModelForm):
@@ -43,7 +41,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('password', 'username', 'is_active', 'is_admin')
+        fields = ('password', 'username', 'is_active', 'is_admin', 'is_staff')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -64,23 +62,16 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('password',)}),
-        ('Permissions', {'fields': ('is_admin', 'is_active',)}),
+        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_staff',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2'),
+            'fields': ('username', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email', 'username',)
+    search_fields = ('username',)
     ordering = ('username',)
     filter_horizontal = ()
-
-
-# Now register the new UserAdmin...
-admin.site.register(User, UserAdmin)
-# ... and, since we're not using Django's built-in permissions,
-# unregister the Group model from admin.
-admin.site.unregister(Group)

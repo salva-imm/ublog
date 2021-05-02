@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+from django.contrib.auth.models import Group, Permission
 
 
 class MyUserManager(BaseUserManager):
@@ -18,6 +19,7 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -32,6 +34,7 @@ class MyUserManager(BaseUserManager):
         )
         user.is_admin = True
         user.is_active = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -48,6 +51,27 @@ class User(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text=(
+            'The groups this user belongs to. A user will get all permissions '
+            'granted to each of their groups.'
+        ),
+        related_name="user_set",
+        related_query_name="user",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name="user_set",
+        related_query_name="user",
+    )
 
     objects = MyUserManager()
 
@@ -63,11 +87,11 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
+    # @property
+    # def is_staff(self):
+    #     "Is the user a member of staff?"
+    #     # Simplest possible answer: All admins are staff
+    #     return self.is_admin
 
     def __str__(self):
         return self.username
