@@ -15,7 +15,8 @@ class ContentList(TimeStampedModel):
     blog = models.ForeignKey(
         "blog.Blog",
         on_delete=models.CASCADE,
-        verbose_name="File"
+        related_name="contents_list",
+        verbose_name="Blog"
     )
     file = models.ForeignKey(
         "file.File",

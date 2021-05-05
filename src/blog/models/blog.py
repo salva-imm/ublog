@@ -62,3 +62,7 @@ class Blog(TimeStampedModel):
         verbose_name="Likes",
         default=0
     )
+    is_draft = models.BooleanField(
+        default=True,
+        verbose_name="Is draft"
+    )
