@@ -12,6 +12,7 @@ class Comment(TimeStampedModel):
         "self",
         on_delete=models.CASCADE,
         verbose_name="Parent category",
+        related_name="replies",
         null=True,
         blank=True
     )
@@ -26,4 +27,8 @@ class Comment(TimeStampedModel):
     likes = models.PositiveIntegerField(
         default=0,
         verbose_name="Likes"
+    )
+    is_validated = models.BooleanField(
+        default=False,
+        verbose_name="Is Validated"
     )
