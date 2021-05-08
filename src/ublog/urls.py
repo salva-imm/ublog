@@ -20,6 +20,10 @@ from django.urls import path, include
 v1_urlpatterns = [
     path('user/', include('user.api.v1.urls'), name='user'),
     path('category/', include('category.api.v1.urls'), name='category'),
+    path('comment/', include('comment.api.v1.urls'), name='comment'),
+    path('file/', include('file.api.v1.urls'), name='file'),
+    path('tag/', include('tag.api.v1.urls'), name='tag'),
+    path('blog/', include('blog.api.v1.urls'), name='blog'),
 ]
 
 
