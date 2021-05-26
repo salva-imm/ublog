@@ -1,4 +1,5 @@
 from django.db import models
+from utils.translation import TranslationProxy
 from django_extensions.db.models import TimeStampedModel
 
 
@@ -36,6 +37,7 @@ class Category(TimeStampedModel):
         null=True,
         blank=True
     )
+    translated = TranslationProxy()
 
     class Meta:
         verbose_name_plural = "Categories"
