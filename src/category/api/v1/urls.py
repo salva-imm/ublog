@@ -1,8 +1,8 @@
-from .views import CategoriesView
+from .views import GetCategoriesView
 from django.urls import path
 
 
 app_name = "category"
 urlpatterns = [
-    path('', CategoriesView.as_view(), name='categories-get-create'),
+    path('', GetCategoriesView.as_view(), name='categories-get-create'),
 ]
