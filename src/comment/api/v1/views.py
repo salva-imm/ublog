@@ -6,7 +6,7 @@ from comment.models.comment import Comment
 # from blog.models.content_list import ContentList
 
 
-class CommentsView(generics.ListAPIView):
+class GetCommentsView(generics.ListAPIView):
     queryset = Comment.objects.filter(is_validated=False)
     serializer_class = CommentsSerializer
 
@@ -14,3 +14,15 @@ class CommentsView(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = CommentsSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class CommentCreateView:
+    pass
+
+
+class CommentDeleteView:
+    pass
+
+
+class CommentEditView:
+    pass

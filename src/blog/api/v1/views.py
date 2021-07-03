@@ -27,3 +27,15 @@ class BlogWithContentsListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         pass  # TODO: create content and connect to blog table
+
+
+class BlogPostCreateView:
+    pass
+
+
+class BlogPostDeleteView:
+    pass
+
+
+class BlogPostEditView:
+    pass
