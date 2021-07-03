@@ -9,16 +9,16 @@ from django.utils.translation import gettext as _
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username, password=None):
+    def create_user(self, email, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
         """
-        if not username:
-            raise ValueError('Users must have a username')
+        if not email:
+            raise ValueError('Users must have a email')
 
         user = self.model(
-            username=username,
+            email=email,
         )
 
         user.set_password(password)
@@ -26,13 +26,13 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password=None):
+    def create_superuser(self, email, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
         user = self.create_user(
-            username,
+            email,
             password=password,
         )
         user.is_admin = True
@@ -43,13 +43,21 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(
-        verbose_name='username',
-        max_length=128,
-        unique=True,
+    first_name = models.CharField(
+        verbose_name='First name',
+        max_length=256,
+    )
+    last_name = models.CharField(
+        verbose_name='Last name',
+        max_length=256,
+    )
+    email = models.EmailField(
+        verbose_name='Email',
+        max_length=256,
+        unique=True
     )
     password = models.CharField(
-        verbose_name='password',
+        verbose_name='Password',
         max_length=128,
     )
     is_active = models.BooleanField(default=False)
@@ -78,7 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
 
     class Meta:
         verbose_name_plural = _('Users')
@@ -93,6 +101,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             ('change_admin', _('Can edit Admin')),
             ('delete_admin', _('Can delete Admin')),
         ]
+
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def get_group_permissions(self, obj=None):
         permissions = set()
@@ -116,4 +128,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
     def __str__(self):
-        return self.username
+        return self.email
