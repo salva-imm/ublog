@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group, Permission, auth
+from django.contrib.auth.models import PermissionsMixin
+
+from django.utils.translation import gettext as _
 
 
 class MyUserManager(BaseUserManager):
@@ -39,7 +42,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         verbose_name='username',
         max_length=128,
@@ -77,21 +80,40 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
 
+    class Meta:
+        verbose_name_plural = _('Users')
+        default_permissions = ()
+        permissions = [
+            ('view_user', _('Can view User')),
+            ('add_user', _('Can add User')),
+            ('change_user', _('Can edit User')),
+            ('delete_user', _('Can delete User')),
+            ('view_admin', _('Can view Admin')),
+            ('add_admin', _('Can add Admin')),
+            ('change_admin', _('Can edit Admin')),
+            ('delete_admin', _('Can delete Admin')),
+        ]
+
+    def get_group_permissions(self, obj=None):
+        permissions = set()
+        for backend in auth.get_backends():
+            if hasattr(backend, "get_group_permissions"):
+                permissions.update(backend.get_group_permissions(self, obj))
+        return permissions
+
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
+        if self.is_active and self.is_admin:
+            return True
 
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
+        user_permissions = self.get_group_permissions()
+        for permission in user_permissions:
+            if permission == perm:
+                return True
+        return False
 
-    # @property
-    # def is_staff(self):
-    #     "Is the user a member of staff?"
-    #     # Simplest possible answer: All admins are staff
-    #     return self.is_admin
+    @property
+    def is_superuser(self):
+        return self.is_admin
 
     def __str__(self):
         return self.username

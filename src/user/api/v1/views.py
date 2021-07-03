@@ -1,6 +1,13 @@
-# from rest_framework.generics import GenericAPIView
-# from django.contrib.contenttypes.models import ContentType
+from utils.permissions import IsGet
+from django.contrib.auth import get_user_model
+from rest_framework.generics import ListAPIView
+from user.api.v1.serializers import UserSerializer
+
+User = get_user_model()
 
 
-# ct = ContentType.objects.get(model='group')
-# ct = ContentType.objects.get(model='permission')
+class GetUserView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    get_args = "user.view_user"
+    permission_classes = [IsGet]
